@@ -1,3 +1,4 @@
+import NotFound from "../errors/NotFound.js";
 import autores from "../models/Autor.js";
 
 class AutorController {
@@ -23,7 +24,10 @@ class AutorController {
       if (autorResultado != null) { // se é diferente de nulo, é porque o id existe
         res.status(200).send(autorResultado);
       } else {
-        res.status(404).send({ message: "Autor não encontrado." });
+        // res.status(404).send({ message: "Autor não encontrado." });
+
+        // e como antes a gente usava o status 404, podemos usar a classe "NotFound" para padonizar os erros
+        next(new NotFound("Autor não encontrado."))
       }
     } catch (erro) {
       next(erro) // o "next" irá encamiar o error para o middleware de tratamento de erros que ta la em "app.js"
@@ -49,7 +53,11 @@ class AutorController {
     try {
       const id = req.params.id;
 
+      // essa linha quer dizer o seguinte: "Encontre o autor pelo id e atualize os campos que vierem no req.body, sobrescrevendo os valores existentes com os novos valores passados.
       await autores.findByIdAndUpdate(id, { $set: req.body });
+      // antes era feito assim:
+        // await author.findByIdAndUpdate(id, req.body)
+
 
       res.status(200).send({ message: "Autor atualizado com sucesso" });
     } catch (erro) {
