@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import BaseError from "../errors/BaseError.js";
 import IncorrectRequest from "../errors/IncorrectRequest.js";
 import ValidationError from "../errors/ValidationErro.js";
-import NotFound from "../errors/NotFound.js";
 
 function errorHandling(erro, req, res, next) {
   // O erro "CastError" no Mongoose é um erro bastante comum que ocorre quando o Mongoose tenta converter (ou fazer "cast") um valor para um tipo específico definido no schema, mas não consegue realizar essa conversão corretamente.
@@ -15,9 +14,9 @@ function errorHandling(erro, req, res, next) {
   // Este erro acontece quando os dados que você está tentando salvar ou atualizar não atendem às regras de validação definidas no seu schema.
   else if (erro instanceof mongoose.Error.ValidationError) {
     new ValidationError(erro).sendResponse(res)
-  } else if(erro instanceof NotFound){
-    erro.sendResponse(res) // e como o objeto NOtFound foi extendido de "BaseError", o obj "erro" já possui o método sendResponse
-  }else {
+  } else if (erro instanceof BaseError) {
+    erro.sendResponse(res)
+  } else {
     new BaseError().sendResponse(res)
   }
 }
