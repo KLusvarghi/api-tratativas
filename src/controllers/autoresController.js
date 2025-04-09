@@ -1,5 +1,5 @@
 import NotFound from "../errors/NotFound.js";
-import autores from "../models/Autor.js";
+import { autores } from "../models/index.js";
 
 class AutorController {
 
@@ -56,7 +56,7 @@ class AutorController {
       // essa linha quer dizer o seguinte: "Encontre o autor pelo id e atualize os campos que vierem no req.body, sobrescrevendo os valores existentes com os novos valores passados.
       await autores.findByIdAndUpdate(id, { $set: req.body });
       // antes era feito assim:
-        // await author.findByIdAndUpdate(id, req.body)
+      // await author.findByIdAndUpdate(id, req.body)
 
 
       res.status(200).send({ message: "Autor atualizado com sucesso" });
